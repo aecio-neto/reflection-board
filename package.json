@@ -1,0 +1,14 @@
+{
+  "name": "ideas-board",
+  "version": "1.0.0",
+  "description": "If stoics had internet, they'd post their wisdom here.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Aécio Neto",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
