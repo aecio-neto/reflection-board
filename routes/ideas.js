@@ -1,93 +1,88 @@
 const express = require('express')
 const router = express.Router()
-
-const ideas = [
-  {
-    id: 1,
-    text: 'Não perca tempo discutindo sobre o que um bom homem deve ser. Seja.',
-    tag: 'Virtude',
-    username: 'Marco Aurélio',
-    date: '17-03-174',
-  },
-  {
-    id: 2,
-    text: 'Enquanto você viver, continue aprendendo a viver.',
-    tag: 'Vida',
-    username: 'Seneca',
-    date: '22-01-58',
-  },
-  {
-    id: 3,
-    text: 'É impossível para um homem aprender aquilo que ele acha que já sabe.',
-    tag: 'Sabedoria',
-    username: 'Epicteto',
-    date: '07-10-128',
-  },
-];
+const Idea = require('../models/Idea')
 
 // Pega todas as ideias
-router.get('/', (request, response) => {
-  response.json({ success: true, data: ideas})
+// o async é por que a busca de dados é assíncrona
+router.get('/', async (request, response) => {
+  try {
+    const ideas = await Idea.find()
+    response.json({ success: true, data: ideas })
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ success: false, error: 'Algo deu errado'})
+  }
 })
 
 // Busca as ideias por id
-router.get('/:id', (request, response) => {
-  const idea = ideas.find(idea => idea.id === +request.params.id)
-
-  if(!idea) {
-    return response
-    .status(404)
-    .json({ success: false, error: 'Referência não encontrada.'})
+router.get('/:id', async (request, response) => {
+  try {
+    const idea = await Idea.findById(request.params.id)
+    response.json({ success: true, data: idea })
+  } catch(erro) {
+    console.log(erro);
+    response.status(500).json({ success: false, error: 'Algo deu errado'})
   }
-
-  response.json({ success: true, data: idea })
 })
 
 // Adiciona ideias / post method
-router.post('/', (request, respond) => {
-  const idea = {
-    id: ideas.length + 1,
+// Instanciando uma nova idea
+// id ficou de fora, pois o banco de dados adiciona uma id automaticamente
+// a data já está default no modelo, então, não precisa ser definida aqui.
+router.post('/', async (request, response) => {
+  const idea = new Idea ({
+    // id: ideas.length + 1,
     text: request.body.text,
     tag: request.body.tag,
     username: request.body.username,
-    date: new Date().toISOString().slice(0, 10)
-  }
+    // date: new Date().toISOString().slice(0, 10)
+  })
 
-  ideas.push(idea)
+  try {
+    const savedIdea = await idea.save()
+    response.json({ success: true, data: savedIdea })
+  } catch (error) {
+    console.log(erro);
+    response.status(500).json({ success: false, error: 'Algo deu errado'})
+    
+  }
 
   respond.json({ success: true, data: idea })
 })
 
 // Update idea 
-router.put('/:id', (request, response) => {
-  const idea = ideas.find(idea => idea.id === +request.params.id)
-
-  if(!idea) {
-    return response
-    .status(404)
-    .json({ success: false, error: 'Referência não encontrada.'})
+router.put('/:id', async (request, response) => {
+  try {
+    const updatedIdea = await Idea.findByIdAndUpdate(
+      request.params.id,
+      {
+        $set: {
+          text: request.body.text,
+          tag: request.body.tag
+        }
+      },
+      { new: true }
+      )
+      response.json({ success: true, data: updatedIdea })
+  } catch (error) {
+    console.log(error)
+    response.status(500).json({ success: false, message: 'Algo deu errado'})
   }
-
-  idea.text = request.body.text || idea.text
-  idea.tag = request.body.tag || idea.tag
-
-  response.json({ success: true, data: idea })
+ 
 })
 
 // Delete idea 
-router.delete('/:id', (request, response) => {
-  const idea = ideas.find(idea => idea.id === +request.params.id)
-
-  if(!idea) {
-    return response
-    .status(404)
-    .json({ success: false, error: 'Referência não encontrada.'})
+router.delete('/:id', async (request, response) => {
+  try {
+    await Idea.findByIdAndDelete(request.params.id)
+    response.json({ success: true, data: {} })
+  } catch (error) {
+    console.log(error)
+    response.status(500).json({ success: false, message: 'Algo deu errado'})
+    
   }
 
-  const index = ideas.indexOf(idea)
-  ideas.splice(index, 1)
-
-  response.json({ success: true, data: {} })
+  
 })
 
 /* Notas sobre o delete
