@@ -42,12 +42,11 @@ router.post('/', async (request, response) => {
     const savedIdea = await idea.save()
     response.json({ success: true, data: savedIdea })
   } catch (error) {
-    console.log(erro);
+    console.log(error);
     response.status(500).json({ success: false, error: 'Algo deu errado'})
     
   }
-
-  respond.json({ success: true, data: idea })
+  response.json({ success: true, data: idea })
 })
 
 // Update idea 
@@ -68,7 +67,6 @@ router.put('/:id', async (request, response) => {
     console.log(error)
     response.status(500).json({ success: false, message: 'Algo deu errado'})
   }
- 
 })
 
 // Delete idea 
@@ -81,8 +79,6 @@ router.delete('/:id', async (request, response) => {
     response.status(500).json({ success: false, message: 'Algo deu errado'})
     
   }
-
-  
 })
 
 /* Notas sobre o delete
@@ -98,7 +94,7 @@ Por fim, uma resposta HTTP com status 200 (OK) é enviada, indicando que a opera
 
 Portanto, o código busca uma ideia com base no id recebido na rota, remove essa ideia do array ideas e retorna uma resposta JSON informando o sucesso da operação.
 
- */
+*/
 
 module.exports = router
 
