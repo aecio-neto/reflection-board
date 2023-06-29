@@ -1,11 +1,15 @@
+const path = require('path')
 const express = require('express')
 require('dotenv').config()
-const port = process.env.PORT || 5000 
+const port = process.env.PORT || 8000 
 const connectDB = require('./config/db')
 
 connectDB()
 
 const app = express()
+
+// Static folder
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Body parser middleware
 // isso nos permite acessar algumas partes através dos requests. Exxemplo: request.body.text = ''
