@@ -6,3 +6,8 @@ const connectDB = async () => {
 }
 
 module.exports = connectDB
+
+
+/* Sobre o Mongoose
+o Mongoose, que é uma biblioteca do Node.js que facilita a interação com bancos de dados MongoDB. 
+*/
