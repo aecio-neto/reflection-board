@@ -42,7 +42,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Webpack App', //as options estão disponíveis na documentação oficial
       filename: 'index.html',
-      template:'./src/template.html'
+      template:'./src/index.html'
     }),
     new MiniCssExtractPlugin()
   ]
