@@ -44,25 +44,29 @@ router.post('/', async (request, response) => {
   } catch (error) {
     console.log(error);
     response.status(500).json({ success: false, error: 'Algo deu errado'})
-    
   }
-  response.json({ success: true, data: idea })
 })
 
 // Update idea 
 router.put('/:id', async (request, response) => {
   try {
-    const updatedIdea = await Idea.findByIdAndUpdate(
-      request.params.id,
-      {
-        $set: {
-          text: request.body.text,
-          tag: request.body.tag
-        }
-      },
-      { new: true }
-      )
-      response.json({ success: true, data: updatedIdea })
+    const idea = await Idea.findById(request.params.id)
+    if (idea.username === request.body.username) {
+      const updatedIdea = await Idea.findByIdAndUpdate(
+        request.params.id,
+        {
+          $set: {
+            text: request.body.text,
+            tag: request.body.tag
+          }
+        },
+        { new: true }
+        )
+      return response.json({ success: true, data: updatedIdea })
+    }
+
+    // Quando o username não é o mesmo. 
+    response.status(403).json({ success: false, message: 'Você não tem permissão para alterar esse arquivo'})
   } catch (error) {
     console.log(error)
     response.status(500).json({ success: false, message: 'Algo deu errado'})
@@ -72,8 +76,16 @@ router.put('/:id', async (request, response) => {
 // Delete idea 
 router.delete('/:id', async (request, response) => {
   try {
-    await Idea.findByIdAndDelete(request.params.id)
-    response.json({ success: true, data: {} })
+    const idea = await Idea.findById(request.params.id)
+
+    // Match username
+    if (idea.username === request.body.username) {
+      await Idea.findByIdAndDelete(request.params.id)
+      return response.json({ success: true, data: {} })
+    }
+    // Quando o usuário não é o mesmo que está tentando deletar. 403 é protocolo não autorizado
+    response.status(403).json({ success: false, message: 'Você não tem permissão para apagar esse arquivo'})
+
   } catch (error) {
     console.log(error)
     response.status(500).json({ success: false, message: 'Algo deu errado'})
