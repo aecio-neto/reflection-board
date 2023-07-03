@@ -1,7 +1,8 @@
 const path = require('path')
 const express = require('express')
+const cors = require('cors')
 require('dotenv').config()
-const port = process.env.PORT || 8000 
+const port = process.env.PORT || 8000   
 const connectDB = require('./config/db')
 
 connectDB()
@@ -15,6 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 // isso nos permite acessar algumas partes através dos requests. Exxemplo: request.body.text = ''
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+
+// cors middleware
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:8000'],
+  credentials: true
+}))
 
 // Routes:  define os endpoits e o que é possível a partir daí.
 
