@@ -1,7 +1,7 @@
 {
-  "name": "ideas-board",
+  "name": "mural-ideias",
   "version": "1.0.0",
-  "description": "If stoics had internet, they'd post their wisdom here.",
+  "description": "Um lugar para colocar pensamentos, reflexões e sabedoria",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
